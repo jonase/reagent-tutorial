@@ -8,12 +8,12 @@
 (def app-state
   (r/atom
    {:contacts
-    [{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
-     {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
-     {:first "Eva" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
-     {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
-     {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
-     {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
+    #{{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
+      {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
+      {:first "Eva" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
+      {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
+      {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
+      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}}}))
 
 (defn update-contacts! [f & args]
   (apply swap! app-state update-in [:contacts] f args))
@@ -22,9 +22,7 @@
   (update-contacts! conj c))
 
 (defn remove-contact! [c]
-  (update-contacts! (fn [cs]
-                      (vec (remove #(= % c) cs)))
-                    c))
+  (update-contacts! disj c))
 
 ;; The next three fuctions are copy/pasted verbatim from the Om tutorial
 (defn middle-name [{:keys [middle middle-initial]}]
@@ -46,12 +44,11 @@
         (>= c 2) (assoc :middle middle)))))
 
 ;; UI components
-(defn contact []
-  (fn [c]
-    [:li 
+(defn contact [c]
+  [:li 
      [:span (display-name c)]
      [:button {:on-click #(remove-contact! c)} 
-      "Delete"]]))
+      "Delete"]])
 
 (defn new-contact []
   (let [val (r/atom "")]
@@ -67,12 +64,18 @@
         "Add"]])))
 
 (defn contacts []
-  [:div
-   [:h1 "Contact list"]
-   [:ul
-    (for [c (:contacts @app-state)]
-      [contact c])]
-   [new-contact]])
+  (let [sort-order (r/atom :last)]
+    (fn []
+      [:div
+       [:h1 "Contact list:"]
+       [:span "Sort By: "]
+       [:select {:on-change #(reset! sort-order (-> % .-target .-value keyword))}
+        (for [v ["last" "first"]]
+          [:option {:value v} v])]
+       [:ul
+        (for [c (sort-by @sort-order (:contacts @app-state))]
+          [contact c])]
+       [new-contact]])))
 
 ;; Render the root component
 (defn start []
