@@ -5,10 +5,13 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2138"]
+                 [http-kit "2.1.16"]
+                 [compojure "1.1.6"]
+                 [hiccup "1.0.4"]
                  [reagent "0.2.0"]]
   :plugins [[lein-cljsbuild "1.0.1"]]
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
-                        :compiler {:output-to "app.js"
+                        :compiler {:output-to "resources/public/app.js"
                                    :optimizations :whitespace
                                    :preamble ["reagent/react.js"]
                                    :pretty-print true}}]})

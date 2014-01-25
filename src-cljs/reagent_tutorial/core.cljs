@@ -1,22 +1,18 @@
 (ns reagent-tutorial.core
-  (:require [clojure.string :as string]
+  (:require [cljs.reader :refer (read-string)]
+            [clojure.string :as string]
             [reagent.core :as r]))
 
 (enable-console-print!)
 
-;; The "database" of your client side UI.
 (def app-state
-  (r/atom
-   {:contacts
-    #{{:first "Ben" :last "Bitdiddle" :email "benb@mit.edu"}
-      {:first "Alyssa" :middle-initial "P" :last "Hacker" :email "aphacker@mit.edu"}
-      {:first "Eva" :middle "Lu" :last "Ator" :email "eval@mit.edu"}
-      {:first "Louis" :last "Reasoner" :email "prolog@mit.edu"}
-      {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
-      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}}}))
+  (r/atom {:contacts #{}}))
 
 (defn update-contacts! [f & args]
   (apply swap! app-state update-in [:contacts] f args))
+
+(defn reset-contacts! [cs]
+  (update-contacts! (constantly cs)))
 
 (defn add-contact! [c]
   (update-contacts! conj c))
@@ -43,10 +39,13 @@
         (== c 1) (assoc :middle-initial middle)
         (>= c 2) (assoc :middle middle)))))
 
+;; send will send a web socket message to the server
+(declare send)
+
 ;; UI components
 (defn contact [c]
   [:li 
-   [:button {:on-click #(remove-contact! c)} 
+   [:button {:on-click #(send {:op :remove :contact c})} 
     "Delete"]
    [:span {:style {:padding-left "5px"}} (display-name c)]])
 
@@ -59,7 +58,7 @@
                 :value @val
                 :on-change #(reset! val (-> % .-target .-value))}]
        [:button {:on-click #(when-let [c (parse-contact @val)]
-                              (add-contact! c)
+                              (send {:op :add :contact c})
                               (reset! val ""))} 
         "Add"]])))
 
@@ -78,8 +77,38 @@
           [contact c])]
        [new-contact]])))
 
-;; Render the root component
+;; Handle web socket messages
+
+(defmulti handle-message :op)
+
+(defmethod handle-message :reset [{:keys [contacts]}]
+  (reset-contacts! contacts))
+
+(defmethod handle-message :remove [{:keys [contact]}]
+  (remove-contact! contact))
+
+(defmethod handle-message :add [{:keys [contact]}]
+  (add-contact! contact))
+
+(def *ws* (atom nil))
+
+(defn send [msg]
+  (when-let [ws @*ws*] 
+    (.send ws (pr-str msg))))
+
 (defn start []
+
+  ;; Render the root component
   (r/render-component 
    [contacts]
-   (.getElementById js/document "root")))
+   (.getElementById js/document "root"))
+
+  ;; Setup the web socket connection
+  (let [ws (js/WebSocket. "ws://localhost:8080/ws")]
+    (set! (.-onopen ws) 
+          (fn [e]
+            (set! (.-onmessage ws)
+                  (fn [e]
+                    (-> e .-data read-string handle-message)))
+            (reset! *ws* ws)
+            (send {:op :get})))))
