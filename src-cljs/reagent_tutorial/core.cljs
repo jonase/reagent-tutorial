@@ -15,20 +15,16 @@
      {:first "Cy" :middle-initial "D" :last "Effect" :email "bugs@mit.edu"}
      {:first "Lem" :middle-initial "E" :last "Tweakit" :email "morebugs@mit.edu"}]}))
 
+(defn update-contacts! [f & args]
+  (apply swap! app-state update-in [:contacts] f args))
+
 (defn add-contact! [c]
-  (swap! app-state
-         update-in
-         [:contacts]
-         conj
-         c))
+  (update-contacts! conj c))
 
 (defn remove-contact! [c]
-  (swap! app-state 
-         update-in 
-         [:contacts] 
-         (fn [cs]
-           (remove #(= % c) cs))
-         c))
+  (update-contacts! (fn [cs]
+                      (vec (remove #(= % c) cs)))
+                    c))
 
 ;; The next three fuctions are copy/pasted verbatim from the Om tutorial
 (defn middle-name [{:keys [middle middle-initial]}]
