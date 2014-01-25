@@ -46,9 +46,9 @@
 ;; UI components
 (defn contact [c]
   [:li 
-     [:span (display-name c)]
-     [:button {:on-click #(remove-contact! c)} 
-      "Delete"]])
+   [:button {:on-click #(remove-contact! c)} 
+    "Delete"]
+   [:span {:style {:padding-left "5px"}} (display-name c)]])
 
 (defn new-contact []
   (let [val (r/atom "")]
@@ -69,9 +69,10 @@
       [:div
        [:h1 "Contact list:"]
        [:span "Sort By: "]
-       [:select {:on-change #(reset! sort-order (-> % .-target .-value keyword))}
+       [:select {:on-change #(reset! sort-order 
+                                     (-> % .-target .-value keyword))}
         (for [v ["last" "first"]]
-          [:option {:value v} v])]
+          [:option {:value v} (string/capitalize v)])]
        [:ul
         (for [c (sort-by @sort-order (:contacts @app-state))]
           [contact c])]
