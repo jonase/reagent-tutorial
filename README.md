@@ -9,11 +9,11 @@ compare/contrast the two approaches.
 
 ## Usage
 
-    git clone <this repo>
+    git clone git@github.com:jonase/reagent-tutorial.git
     cd reagent-tutorial
     lein cljsbuild auto
 
-Open [`app.html`]() and read/edit [`src-cljs/reagent_tutorial/core.cljs`]().
+Open [`app.html`](https://github.com/jonase/reagent-tutorial/blob/master/app.html) and read/edit [`src-cljs/reagent_tutorial/core.cljs`](https://github.com/jonase/reagent-tutorial/blob/master/src-cljs/reagent_tutorial/core.cljs).
 
 Feedback welcome!
 
