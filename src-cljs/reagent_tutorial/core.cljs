@@ -47,7 +47,7 @@
 
 ;; UI components
 (defn contact [c]
-  [:li 
+  [:li
    [:span (display-name c)]
    [:button {:on-click #(remove-contact! c)} 
     "Delete"]])
@@ -65,7 +65,7 @@
                               (reset! val ""))} 
         "Add"]])))
 
-(defn contacts []
+(defn contact-list []
   [:div
    [:h1 "Contact list"]
    [:ul
@@ -76,5 +76,5 @@
 ;; Render the root component
 (defn start []
   (r/render-component 
-   [contacts]
+   [contact-list]
    (.getElementById js/document "root")))
