@@ -46,12 +46,11 @@
         (>= c 2) (assoc :middle middle)))))
 
 ;; UI components
-(defn contact []
-  (fn [c]
-    [:li 
-     [:span (display-name c)]
-     [:button {:on-click #(remove-contact! c)} 
-      "Delete"]]))
+(defn contact [c]
+  [:li 
+   [:span (display-name c)]
+   [:button {:on-click #(remove-contact! c)} 
+    "Delete"]])
 
 (defn new-contact []
   (let [val (r/atom "")]
