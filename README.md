@@ -200,6 +200,14 @@ When `app-state` changes (either by adding or deleting a contact) the
 underlying React system will figure out the minimal required changes
 to the DOM and perform the updates on our behalf.
 
+The last piece of the puzzle is to attach the root node to some existing dom node. In our case the root node will be `contact-list` and we will attach it to an empty `div` element with id `root`:
+
+```clojure
+(defn start []
+  (r/render-component 
+   [contact-list]
+   (.getElementById js/document "root")))
+```
 
 ## License
 
