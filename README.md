@@ -33,9 +33,9 @@ Reagent. We will only use two functions from the Reagent namespace:
 `r/atom` and `r/render-component`.
 
 `r/atom` is very similar to the ordinary Clojure `atom` but with
-`r/atom` watchers are notified when someone dereferences the atom.
-
-`r/render-component` will be used to render the root UI component.
+`r/atom` watchers are notified when someone dereferences the
+atom. `r/render-component` will be used to render the root UI
+component.
 
 Next, we define a global `r/atom` which will hold our application
 state as well as a few helper functions to manipulate the contents of
@@ -64,7 +64,7 @@ that state.
                     c))
 ```
 
-Think of add-contact! and remove-contact! as the interface to our
+Think of `add-contact!` and `remove-contact!` as the interface to our
 "database" of contacts. These two functions could be part of a
 protocol to allow different "backend" implementations.
 
@@ -121,7 +121,10 @@ user=> (display-name {:first "John" :middle "Edwin" :last "Doe"})
 ```
 
 With all this out of the way we can finally start figuring out how to
-put things on the screen. With reagent you create UI components out of `hiccup` datastructures. The component which displays a single contact from our "database" is defined as follows:
+put things on the screen. With Reagent you create UI components out of
+[`hiccup`](https://github.com/weavejester/hiccup) data structures. The
+component which displays a single contact from our "database" is
+defined as follows:
 
 ```clojure
 (defn contact [c]
@@ -131,7 +134,8 @@ put things on the screen. With reagent you create UI components out of `hiccup` 
     "Delete"]])
 ```
 
-The above datastructure is roughly equivalent to the following HTML/JS pseudo-code:
+The above data structure is roughly equivalent to the following
+HTML/JS pseudo-code:
 
 ```html
 <li>
@@ -140,14 +144,14 @@ The above datastructure is roughly equivalent to the following HTML/JS pseudo-co
 </li>
 ```
 
-Hopefully you have no trouble reading `hiccup` data-structures: an
+Hopefully you have no trouble reading `hiccup` data structures: an
 vector like `[:li ..]` is translated to the tag
 `<li>..</li>`. Arbitrary Clojure code can be used to generate these
 vectors and Clojure functions can be used when registering event
 handlers.
 
 Note also that `contact` is simply an ordinary Clojure function which
-takes a contact `c` and returns a `hiccup` data-structure.
+takes a contact `c` and returns a `hiccup` data structure.
 
 We can now use the `contact` component when defining `contact-list`:
 
