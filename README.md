@@ -9,7 +9,7 @@ compare/contrast the two approaches.
 
 ## Usage
 
-    git clone git@github.com:jonase/reagent-tutorial.git
+    git clone https://github.com/jonase/reagent-tutorial.git
     cd reagent-tutorial
     lein cljsbuild auto
 
