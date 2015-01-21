@@ -61,7 +61,7 @@ that state.
 (defn remove-contact! [c]
   (update-contacts! (fn [cs]
                       (vec (remove #(= % c) cs)))
-                    c))
+                    ))
 ```
 
 Think of `add-contact!` and `remove-contact!` as the interface to our
