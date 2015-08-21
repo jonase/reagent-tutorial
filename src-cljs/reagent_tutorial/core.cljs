@@ -62,7 +62,7 @@
                 :on-change #(reset! val (-> % .-target .-value))}]
        [:button {:on-click #(when-let [c (parse-contact @val)]
                               (add-contact! c)
-                              (reset! val ""))} 
+                              (reset! val ""))}
         "Add"]])))
 
 (defn contact-list []
