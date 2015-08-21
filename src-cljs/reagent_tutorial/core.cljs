@@ -24,7 +24,7 @@
 (defn remove-contact! [c]
   (update-contacts! (fn [cs]
                       (vec (remove #(= % c) cs)))
-                    c))
+                    ))
 
 ;; The next three fuctions are copy/pasted verbatim from the Om tutorial
 (defn middle-name [{:keys [middle middle-initial]}]
