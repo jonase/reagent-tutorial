@@ -46,10 +46,10 @@
         (>= c 2) (assoc :middle middle)))))
 
 ;; UI components
-(defn contact [c]
-  [:li
+(defn contact [id c]
+  [:li {:key id}
    [:span (display-name c)]
-   [:button {:on-click #(remove-contact! c)} 
+   [:button {:on-click #(remove-contact! c)}
     "Delete"]])
 
 (defn new-contact []
@@ -69,12 +69,11 @@
   [:div
    [:h1 "Contact list"]
    [:ul
-    (for [c (:contacts @app-state)]
-      [contact c])]
+    (map-indexed (fn [id element] (contact id element)) (:contacts @app-state))]
    [new-contact]])
 
 ;; Render the root component
 (defn start []
-  (r/render-component 
+  (r/render-component
    [contact-list]
    (.getElementById js/document "root")))
